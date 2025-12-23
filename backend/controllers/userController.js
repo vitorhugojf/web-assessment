@@ -10,20 +10,20 @@ const loginUser = async (req, res) => {
     const user = await userModel.findOne({ email });
 
     if (!user) {
-      return res.json({ success: false, message: "User does not exist" });
+      return res.status(400).json({ success: false, message: "User does not exist" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.json({ success: false, message: "Invalid credentials" });
+      return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
 
     const token = createToken(user._id);
-    res.json({ success: true, token });
+    res.status(200).json({ success: true, token });
   } catch (error) {
     console.log(error);
-    res.json({ success: false, message: "Error" });
+    res.status(500).json({ success: false, message: "Error" });
   }
 };
 
